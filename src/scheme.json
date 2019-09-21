@@ -1,0 +1,82 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "LaraOne Theme validating scheme",
+    "type": "object",
+    "definitions": {
+        "settings": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "label": { "type": "string" },
+                    "type": {
+                        "type": "string",
+                        "enum": [ "string", "integer", "boolean", "section" ]
+                    },
+                    "key": { "type": "string" },
+                    "default": { "type": ["string", "boolean", "integer"]},
+                    "meta": {
+                        "type": "object",
+                        "properties": {
+                            "uiType": {
+                                "type": "string",
+                                "enum": ["input", "inputDisabled", "select", "layoutSelector", "contentLayoutSelector", "px", "mediaLibrary", "textArea", "color", "boolSelect"]
+                            },
+                            "options": { "type": "array" },
+                            "dependency": {
+                                "type": "object",
+                                "properties": {
+                                    "on": { "type": "string" },
+                                    "if": { "type": "string" }
+                                },
+                                "required": [ "on" ]
+                            }
+                        }
+                    },
+                    "settings": { "$ref": "#/definitions/settings" }
+                },
+                "required": [ "label", "key", "type" ]
+            }
+        }
+    },
+    "properties": {
+        "name": { "type": "string" },
+        "releases_url": { "type": "string" },
+        "download_url": { "type": "string" },
+        "namespace": { "type": "string" },
+        "tags": {
+            "description": "Tags for the product",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "maxItems": 5,
+            "uniqueItems": true
+        },
+        "author": { "type": "string" },
+        "version": { "type": "string" },
+        "description": { "type": "string" },
+        "screenshots": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 5
+        },
+        "views-path": { "type": "string" },
+        "asset-path": { "type": "string" },
+        "settings": { "$ref": "#/definitions/settings" }
+    },
+    "required": [
+        "name",
+        "releases_url",
+        "download_url",
+        "namespace",
+        "tags",
+        "author",
+        "version",
+        "description",
+        "views-path",
+        "asset-path",
+        "settings"
+    ]
+}

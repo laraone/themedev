@@ -1,0 +1,34 @@
+{
+    "name": "laraone/themedev",
+    "description": "Theme Development Package for Laraone CMS",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Niko Craft"
+        },
+        {
+            "name": "Mystery Reloaded"
+        }
+    ],
+    "type": "library",
+    "require": {
+        "php": ">=7.1",
+        "justinrainbow/json-schema": "^5.2"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "laraone\\themedev\\ThemeDevServiceProvider"
+            ]
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "6.*",
+        "orchestra/testbench": "~3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "laraone\\themedev\\": "src/"
+        }
+    }
+}
