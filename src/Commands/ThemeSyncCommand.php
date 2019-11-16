@@ -38,15 +38,38 @@ class ThemeSyncCommand extends Command
         $phoenixPath = config('app.phoenix_path');
 
         if ($zipOption) {
-            copy('build/' . $themeName . '.zip', $phoenixPath . '/storage/themes/' . $themeName . '.zip');
-            $this->info('Zip has been synced with Phoenix');
+            if(file_exists('build' . DIRECTORY_SEPARATOR . $themeName . '.zip')) {
+                copy(
+                    'build' . DIRECTORY_SEPARATOR . $themeName . '.zip', 
+                    $phoenixPath . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $themeName . '.zip'
+                );
+                $this->info('Zip has been synced with Phoenix');
+            } else {
+                exit('Theme has not been packed into a zip file yet. Run theme:pack command first.');
+            }
         }
 
-        if ($foldersOption) {
-            $this->copyDirectory('theme/views', $phoenixPath . '/resources/themes/' . $themeName);
-            $this->copyDirectory('theme/assets', $phoenixPath . '/public/themes/' . $themeName);
-            $this->info('Working directories has been synced with Phoenix');
+        // sync views
+        if(file_exists('src' . DIRECTORY_SEPARATOR . 'views')) {
+            $this->copyDirectory(
+                'src' . DIRECTORY_SEPARATOR . 'views', 
+                $phoenixPath . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $themeName
+            );
+        } else {
+            exit('Folder src\view is missing, there is nothing to sync.');
         }
+
+        // sync assets
+        if(file_exists('build' . DIRECTORY_SEPARATOR . 'theme' . DIRECTORY_SEPARATOR . 'assets')) {
+            $this->copyDirectory(
+                'build' . DIRECTORY_SEPARATOR . 'theme' . DIRECTORY_SEPARATOR . 'assets', 
+                $phoenixPath . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $themeName
+            );
+        } else {
+            exit('Assets are missing, make sure you compile the assets first with npm run dev or yarn run dev.');
+        }
+
+        $this->info('Theme has been synced to Phoenix.');
     }
 
     /**
@@ -62,8 +85,8 @@ class ThemeSyncCommand extends Command
 
     private function getThemeData()
     {
-        $theme = base_path() . DIRECTORY_SEPARATOR . 'theme';
-        $themeData = json_decode(file_get_contents($theme . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'theme.json'));
+        $src = base_path() . DIRECTORY_SEPARATOR . 'src';
+        $themeData = json_decode(file_get_contents($src . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'theme.json'));
         return $themeData;
     }
 

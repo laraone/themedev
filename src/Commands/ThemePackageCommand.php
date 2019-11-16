@@ -36,7 +36,14 @@ class ThemePackageCommand extends Command
     public function handle()
     {
         if (extension_loaded('zip')) {
-            $theme = base_path() . DIRECTORY_SEPARATOR . 'theme';
+
+            // copy views to build directory
+            $this->copyDirectory(
+                'src' . DIRECTORY_SEPARATOR . 'views', 
+                'build' . DIRECTORY_SEPARATOR . 'theme' . DIRECTORY_SEPARATOR . 'views'
+            );
+
+            $theme = base_path() . DIRECTORY_SEPARATOR . 'build'. DIRECTORY_SEPARATOR . 'theme';
             $themeData = json_decode(file_get_contents($theme . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'theme.json'));
             $validator = new JsonValidator;
             $jsonSchema = '..' . DIRECTORY_SEPARATOR . 'scheme.json';
@@ -58,10 +65,7 @@ class ThemePackageCommand extends Command
                 // Create ZipArchive Obj
                 $zip = new ZipArchive;
                 if ($zip->open($zipFileName, (ZipArchive::CREATE | ZipArchive::OVERWRITE)) === true) {
-                    $files = new RecursiveIteratorIterator(
-                        new RecursiveDirectoryIterator($theme),
-                        RecursiveIteratorIterator::LEAVES_ONLY
-                    );
+                    $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($theme), RecursiveIteratorIterator::LEAVES_ONLY);
                     $this->info('Packing the theme...');
                     foreach ($files as $name => $file) {
                         // Skip directories (they would be added automatically)
@@ -97,5 +101,26 @@ class ThemePackageCommand extends Command
     public function schedule(Schedule $schedule): void
     {
         // $schedule->command(static::class)->everyMinute();
+    }
+
+    private function copyDirectory($from, $to, $rewrite = true)
+    {
+        if (is_dir($from)) {
+            @mkdir($to);
+            $d = dir($from);
+            while (false !== ($entry = $d->read())) {
+                if ($entry == "." || $entry == "..") {
+                    continue;
+                }
+
+                $this->copyDirectory("$from/$entry", "$to/$entry", $rewrite);
+            }
+            $d->close();
+        } else {
+            if (!file_exists($to) || $rewrite) {
+                copy($from, $to);
+            }
+
+        }
     }
 }
