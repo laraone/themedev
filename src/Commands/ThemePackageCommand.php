@@ -24,7 +24,7 @@ class ThemePackageCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Package theme files into an installable zip.';
+    protected $description = 'Package theme files into an installable zip that can be used for distribution.';
 
     /**
      * The type of class being generated.
@@ -38,7 +38,7 @@ class ThemePackageCommand extends Command
         if (extension_loaded('zip')) {
 
             // copy views to build directory
-            $this->copyDirectory(
+            copyDirectory(
                 'src' . DIRECTORY_SEPARATOR . 'views', 
                 'build' . DIRECTORY_SEPARATOR . 'theme' . DIRECTORY_SEPARATOR . 'views'
             );
@@ -101,26 +101,5 @@ class ThemePackageCommand extends Command
     public function schedule(Schedule $schedule): void
     {
         // $schedule->command(static::class)->everyMinute();
-    }
-
-    private function copyDirectory($from, $to, $rewrite = true)
-    {
-        if (is_dir($from)) {
-            @mkdir($to);
-            $d = dir($from);
-            while (false !== ($entry = $d->read())) {
-                if ($entry == "." || $entry == "..") {
-                    continue;
-                }
-
-                $this->copyDirectory("$from/$entry", "$to/$entry", $rewrite);
-            }
-            $d->close();
-        } else {
-            if (!file_exists($to) || $rewrite) {
-                copy($from, $to);
-            }
-
-        }
     }
 }

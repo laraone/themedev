@@ -20,7 +20,7 @@ class ThemeSyncCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Syncronize working directory with Phoenix where theme is installed. Used during development only.';
 
     /**
      * The type of class being generated.
@@ -51,7 +51,7 @@ class ThemeSyncCommand extends Command
 
         // sync views
         if(file_exists('src' . DIRECTORY_SEPARATOR . 'views')) {
-            $this->copyDirectory(
+            copyDirectory(
                 'src' . DIRECTORY_SEPARATOR . 'views', 
                 $phoenixPath . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $themeName
             );
@@ -61,7 +61,7 @@ class ThemeSyncCommand extends Command
 
         // sync assets
         if(file_exists('build' . DIRECTORY_SEPARATOR . 'theme' . DIRECTORY_SEPARATOR . 'assets')) {
-            $this->copyDirectory(
+            copyDirectory(
                 'build' . DIRECTORY_SEPARATOR . 'theme' . DIRECTORY_SEPARATOR . 'assets', 
                 $phoenixPath . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $themeName
             );
@@ -88,26 +88,5 @@ class ThemeSyncCommand extends Command
         $src = base_path() . DIRECTORY_SEPARATOR . 'src';
         $themeData = json_decode(file_get_contents($src . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'theme.json'));
         return $themeData;
-    }
-
-    private function copyDirectory($from, $to, $rewrite = true)
-    {
-        if (is_dir($from)) {
-            @mkdir($to);
-            $d = dir($from);
-            while (false !== ($entry = $d->read())) {
-                if ($entry == "." || $entry == "..") {
-                    continue;
-                }
-
-                $this->copyDirectory("$from/$entry", "$to/$entry", $rewrite);
-            }
-            $d->close();
-        } else {
-            if (!file_exists($to) || $rewrite) {
-                copy($from, $to);
-            }
-
-        }
     }
 }

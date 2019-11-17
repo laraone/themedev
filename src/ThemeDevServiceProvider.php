@@ -20,5 +20,7 @@ class ThemeDevServiceProvider extends ServiceProvider
             Commands\ThemeSyncCommand::class,
             Commands\ThemeValidateCommand::class,
         ]);
+
+        require_once __DIR__ . '\helpers.php';
     }
 }
