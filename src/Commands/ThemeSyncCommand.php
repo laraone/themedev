@@ -20,7 +20,7 @@ class ThemeSyncCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Syncronize working directory with Phoenix where theme is installed. Used during development only.';
+    protected $description = 'Synchronize working directory with Phoenix where theme is installed. Used during development only.';
 
     /**
      * The type of class being generated.
