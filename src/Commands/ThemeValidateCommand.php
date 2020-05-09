@@ -31,7 +31,7 @@ class ThemeValidateCommand extends Command
 
     public function handle()
     {
-        $theme = base_path() . DIRECTORY_SEPARATOR . 'theme';
+        $theme = base_path() . DIRECTORY_SEPARATOR . 'src';
         $themeData = json_decode(file_get_contents($theme . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'theme.json'));
         $validator = new JsonValidator;
         $jsonSchema = '..' . DIRECTORY_SEPARATOR . 'scheme.json';
